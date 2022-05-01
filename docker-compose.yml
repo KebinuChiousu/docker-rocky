@@ -1,0 +1,38 @@
+version: '3.6'
+services:
+  admin-host:
+    hostname: rocky
+    image: meredithkm/rocky
+    container_name: rocky-ssh
+    restart: unless-stopped
+    stop_grace_period: 1m40s
+    ports:
+     - "2222:22/tcp"
+    volumes:
+     - repo:/srv/repo/
+     - ssh_config:/etc/ssh/
+     - home:/home/rocky/
+    tmpfs:
+     - /tmp
+     - /run
+    networks:
+     - default
+
+volumes:
+  repo:
+    driver: local-persist
+    driver_opts:
+      mountpoint: /local/docker-data/rocky/repo/
+  ssh_config:
+    driver: local-persist
+    driver_opts:
+      mountpoint: /local/docker-data/rocky/ssh_config
+  home:
+    driver: local-persist
+    driver_opts:
+      mountpoint: /opt/docker-data/rocky/rocky
+
+networks:
+  default:
+    external: true
+    name: docker-lan
